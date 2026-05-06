@@ -1,0 +1,11 @@
+services:
+  openvas:
+    image: immauss/openvas
+    container_name: sumativa-openvas
+    ports:
+      - "9392:9392"
+    environment:
+      - OV_PASSWORD=admin
+    # Lo conectamos a la red local para que pueda "ver" y atacar al frontend/backend
+    networks:
+      - default
