@@ -1,0 +1,52 @@
+services:
+  mysql:
+    build:
+      context: ./mysql
+    container_name: sumativa-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./cdy2203-backend-2026-201-main
+    container_name: sumativa-backend
+    restart: unless-stopped
+    environment:
+      SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/mydatabase?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+
+  frontend:
+    build:
+      context: ./cdy2203-2026-201-main
+    container_name: sumativa-frontend
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:8081
+      SERVER_PORT: 8080
+    depends_on:
+      - backend
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:
