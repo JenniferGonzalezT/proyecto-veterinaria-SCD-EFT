@@ -1,0 +1,30 @@
+services:
+  sonarqube:
+    image: sonarqube:9.9.4-community
+    container_name: sumativa-sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_FORCEAUTHENTICATION=false
+    networks:
+      - sast-network
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: sumativa-jenkins
+    user: root
+    ports:
+      - "8082:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - .:/var/jenkins_workspace
+    networks:
+      - sast-network
+
+networks:
+  sast-network:
+    driver: bridge
+
+volumes:
+  jenkins_data:
