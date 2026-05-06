@@ -44,9 +44,9 @@ public class WebSecurityConfig {
                     .maxAgeInSeconds(31536000)
                 )
                 
-                // Mitiga CSP (Alerta Naranja) y refuerza la protección contra iframes
+                // Mitiga CSP (Alerta Naranja) pero permitiendo la operatividad del frontend
                 .contentSecurityPolicy(csp -> csp
-                    .policyDirectives("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none';")
+                    .policyDirectives("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;")
                 )
             )
 
